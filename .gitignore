@@ -1,0 +1,4 @@
+#Ignore Mind Hypertrophy Files
+.vscode/
+dist/
+node_modules/
