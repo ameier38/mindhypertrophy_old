@@ -3,6 +3,7 @@ var webpack = require('webpack');
 
 module.exports = {
     entry: [
+        'boostrap-loader',
         './src/index'
     ],
     output: {
