@@ -1,9 +1,13 @@
 ﻿//import css
-import 'bootstrap/dist/css/bootstrap.css'
+require("bootstrap-webpack");
 import '../css/app.css'   //add second to override the bootstrap styles
 
 //import classNames
 var classNames = require('classnames')
+
+//import Loading
+//TODO: figure out why import does not work
+var Spinner = require('react-spinkit');
 
 //import componenets
 import React, { Component } from 'react';
@@ -17,7 +21,7 @@ class Navigation extends Component{
     render(){
         return(
             <div id="navigation">
-                <Navbar fixedTop inverse onToggle={this.props.toggleSidebar}>
+                <Navbar fixedTop inverse >
                     <div className="navbar-header pull-left">
                         <Link className="navbar-brand btn" to="/">MindHypertrophy</Link>
                     </div>
@@ -26,7 +30,7 @@ class Navigation extends Component{
                             <li><Link className="navbar-brand btn" to="/about">About</Link></li>
                             <li><Link className="navbar-brand btn" to="/contact">Contact</Link></li>
                         </ul>
-                        <Navbar.Toggle />
+                        <Navbar.Toggle onClick={this.props.toggleSidebar}/>
                     </div>
                 </Navbar>
             </div> 
@@ -61,7 +65,7 @@ class Card extends Component{
             <Col xs={12} sm={6}>
                 <div className="card clickable">
                     <div className="card-header">
-                        <h3 className="card-header-title"><Link to={`/articles/${this.props.key}`}>{this.props.title}</Link></h3>
+                        <h3 className="card-header-title"><Link to={`/articles/${this.props.id}`}>{this.props.title}</Link></h3>
                         <span className="card-header-date">{this.props.createdDate}</span>
                     </div>
                     <div className="card-summary">
@@ -162,48 +166,61 @@ export class CardDetail extends Component{
     constructor(props) {
         super(props)
         //intialize cards as empty array
-        //TODO: add loading state prop to use later for spinning icon
         this.state = { 
-            cardDetail: null
+            cardDetail: null,
+            loading: true
         }
         //bind updateDetail method to the CardDetail instance
         this.updateDetail = this.updateDetail.bind(this)
+        //initialize CardStore detail
+        CardStore.initDetail(this.props.params.id)
     }
     componentDidMount(){
         //Add change listener
         CardStore.addChangeListener(this.updateDetail)
+        //fetch data
+        this.updateDetail()
     }
     componentWillUnmount(){
         //Remove change listener
         CardStore.removeChangeListener(this.updateDetail)
     }
-    updateDetail() {
+    updateDetail() {           
         this.setState({
-            cardDetail: CardStore.getCardById(this.props.params.id),
+            cardDetail: CardStore.getDetail(),
+            loading: false
         })
     }
-    
     render(){
-        var content = { __html: this.state.cardDetail.Content };
-        return (
-            <div className="card-container">
-                <Jumbotron
-                    title={this.state.cardDetail.Title}
-                    description={this.state.cardDetail.CreatedDate}
-                    imageUrl={this.state.cardDetail.ImageUrl} />
-                <Grid>
-                    <Row>
-                        <Col xs={12}>
-                            <div className="card">
-                                <div className="card-content">
-                                    <div dangerouslySetInnerHTML={content} />
+        if (this.state.loading){
+            return (
+                <div className="card-container">
+                    <Spinner spinnerName='three-bounce'/>
+                </div>    
+            ) 
+        }
+        else {
+            const content = { __html: this.state.cardDetail.Content }
+            return (
+                <div className="card-container">
+                    <Jumbotron
+                        title={this.state.cardDetail.Title}
+                        description={this.state.cardDetail.CreatedDate}
+                        imageUrl={this.state.cardDetail.ImageUrl} />
+                    <Grid>
+                        <Row>
+                            <Col xs={12}>
+                                <div className="card">
+                                    <div className="card-content">
+                                        <div dangerouslySetInnerHTML={content} />
+                                    </div>
                                 </div>
-                            </div>
-                        </Col>
-                    </Row> 
-                </Grid>
-            </div>    
-        );
+                            </Col>
+                        </Row> 
+                    </Grid>
+                </div>    
+            )
+        } 
     } 
 }
 
@@ -223,6 +240,8 @@ export class CardContainer extends Component{
     componentDidMount(){
         //Add change listener
         CardStore.addChangeListener(this.updateData)
+        //fetch data
+        this.updateData()
     }
     componentWillUnmount(){
         //Remove change listener
@@ -250,6 +269,7 @@ export class CardContainer extends Component{
             return (
                 <Card 
                     key={card.Id} 
+                    id={card.Id}
                     title={card.Title} 
                     summary={card.Summary} 
                     createdDate={card.CreatedDate} 
@@ -264,7 +284,7 @@ export class CardContainer extends Component{
                     description="Give your brain a workout! Click an article below to learn more."
                     imageUrl="url(/images/neurons.jpg)" />
                 <TagFilter 
-                    sidebarVisible={this.props.params.sidebarVisible}
+                    sidebarVisible={this.props.sidebarVisible}
                     tags={this.state.tags} />
                 <Grid>
                     <Row>

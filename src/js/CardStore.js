@@ -6,6 +6,7 @@ const tagApi = 'http://localhost:5000/api/tags'
 //initialize CardStore
 let _cards = []
 let _tags = []
+let _cardDetail = {}
 let _initCalled = false
 let _changeListeners = []
 
@@ -41,6 +42,15 @@ const CardStore = {
         })    
     },
     
+    initDetail: function (id) {
+        var qryApi = cardApi + '/' + id
+        //get the card detail by id
+        getJSON(qryApi,function (err, res) {
+            _cardDetail = res
+            CardStore.notifyChange()
+        })
+    },
+    
     getCards: function () {
         var cards = []
         for (const id in _cards) {
@@ -57,13 +67,7 @@ const CardStore = {
         return tags
     },
 
-    getCardById: function (id) {
-        var qryApi = cardApi + '/' + id
-        //get the card detail by id
-        getJSON(qryApi,function (err, res) {
-            _cardDetail = res
-            CardStore.notifyChange()
-        })
+    getDetail: function () {
         return _cardDetail
     },
     
@@ -95,16 +99,25 @@ function loadFromServer(apiUrl){
     xhr.send()
 }
 
+// function getJSON(url, cb) {
+//   const req = new XMLHttpRequest()
+//   req.onreadystatechange = function () {
+//     //alert(req.readyState + " " + req.status);
+//     if (req.readyState == 4 && req.status == 200) {
+//       //parse the json reponse into an array object
+//       cb(null, JSON.parse(req.response))
+//     }
+//   }
+//   req.open('GET', url)
+//   req.send()
+// }
+
 function getJSON(url, cb) {
   const req = new XMLHttpRequest()
-  req.onreadystatechange = function () {
-    //alert(req.readyState + " " + req.status);
-    if (req.readyState == 4 && req.status == 200) {
-      //parse the json reponse into an array object
-      cb(null, JSON.parse(req.response))
-    }
+  req.open('GET', url, true)
+  req.onload = () => {
+      cb(null, JSON.parse(req.responseText))
   }
-  req.open('GET', url)
   req.send()
 }
 

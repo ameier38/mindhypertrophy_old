@@ -3,7 +3,6 @@ var webpack = require('webpack');
 
 module.exports = {
     entry: [
-        'boostrap-loader',
         './src/index'
     ],
     output: {
@@ -48,5 +47,11 @@ module.exports = {
     //let webpack know which extensions to resolve in the require statements
     resolve: {
         extensions: ['','.js','.jsx'] 
-    }
+    },
+    plugins: [
+        new webpack.ProvidePlugin({
+           $: "jquery",
+           jQuery: "jquery"
+       })
+    ]
 };
