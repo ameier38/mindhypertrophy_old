@@ -4,7 +4,7 @@ var webpack = require('webpack');
 module.exports = {
   devtool: 'source-map',
   entry: [
-    './src/index_test'
+    './src/index'
   ],
   output: {
     path: path.join(__dirname, 'dist'),
@@ -18,6 +18,10 @@ module.exports = {
         'NODE_ENV': JSON.stringify('production')
       }
     }),
+    new webpack.ProvidePlugin({
+        $: "jquery",
+        jQuery: "jquery"
+    }),
     new webpack.optimize.UglifyJsPlugin({
       compressor: {
         warnings: false
@@ -27,25 +31,13 @@ module.exports = {
   module: {
         loaders: [
             {
-                //regex that tests what kind of files to run through the loader
                 test: /\.jsx?/,
-                //loaders to use
                 loaders: ['babel'],
-                //path for files to run through loaders
                 include: path.join(__dirname, 'src')
             },
             {
                 test: /\.css$/,
-                //runs the css loader then the style loader (for bootstrap)
-                //TODO: need to understand how to get this to work with bootstrap
-                loader: "style-loader!css-loader",
-                //include: path.join(__dirname,'src','css')
-            },
-            {
-                test: /\.(png|jpg)$/,
-                //images below 10kb will be inlined as base 64 encoded data
-                loader: 'url-loader?limit=8124',
-                include: path.join(__dirname,'images')
+                loader: "style-loader!css-loader"
             },
             //bootstrap specific
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },

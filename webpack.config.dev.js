@@ -6,7 +6,7 @@ module.exports = {
     entry: [
         'eventsource-polyfill', // necessary for hot reloading with IE
         'webpack-hot-middleware/client',
-        './src/index_test'
+        './src/index'
     ],
     output: {
         //path to output the bundled files
@@ -18,7 +18,11 @@ module.exports = {
     },
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
-        new webpack.NoErrorsPlugin()
+        new webpack.NoErrorsPlugin(),
+        new webpack.ProvidePlugin({
+           $: "jquery",
+           jQuery: "jquery"
+       })
     ],
     module: {
         loaders: [
@@ -32,16 +36,8 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                //runs the css loader then the style loader (for bootstrap)
-                //TODO: need to understand how to get this to work with bootstrap
                 loader: "style-loader!css-loader",
                 //include: path.join(__dirname,'src','css')
-            },
-            {
-                test: /\.(png|jpg)$/,
-                //images below 10kb will be inlined as base 64 encoded data
-                loader: 'url-loader?limit=8124',
-                include: path.join(__dirname,'images')
             },
             //bootstrap specific
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
