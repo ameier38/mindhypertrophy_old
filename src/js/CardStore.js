@@ -1,7 +1,7 @@
 //https://github.com/reactjs/react-router/blob/master/examples/master-detail/ContactStore.js
 
-const cardApi = 'http://mindhypertrophy.azurewebsites.net/api/cards'
-const tagApi = 'http://mindhypertrophy.azurewebsites.net/api/tags'
+const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
+const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
 
 //initialize CardStore
 let _cards = []
