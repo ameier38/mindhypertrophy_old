@@ -20,9 +20,9 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin(),
         new webpack.ProvidePlugin({
-           $: "jquery",
-           jQuery: "jquery"
-       })
+            $: "jquery",
+            jQuery: "jquery"
+        })
     ],
     module: {
         loaders: [
@@ -37,7 +37,6 @@ module.exports = {
             {
                 test: /\.css$/,
                 loader: "style-loader!css-loader",
-                //include: path.join(__dirname,'src','css')
             },
             //bootstrap specific
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
@@ -49,6 +48,6 @@ module.exports = {
     },
     //let webpack know which extensions to resolve in the require statements
     resolve: {
-        extensions: ['','.js','.jsx'] 
+        extensions: ['','.js','.jsx']
     }
 };

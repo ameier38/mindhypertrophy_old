@@ -32,12 +32,14 @@ if (isDevelopment){
     });
 }
 else{
-    app.use(express.static(static_path))
-    .get('*', function (req, res) {
-            res.sendFile('index.html', {
-            root: static_path
-        });
-    }).listen(process.env.PORT || 8080, function (err) {
+    app.use(express.static(static_path));
+    app.use('/static', express.static('dist'));
+    
+    app.get('*', function(req, res) {
+        res.sendFile(path.join(static_path, 'index.html'));
+    });
+    
+    app.listen(process.env.PORT || 8080, function (err) {
         if (err) { console.log(err) };
         console.log('Listening at localhost:8080');
     });

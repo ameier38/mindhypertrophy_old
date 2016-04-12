@@ -1,8 +1,4 @@
-﻿//import css
-require("bootstrap-webpack");
-import '../css/app.css'   //add second to override the bootstrap styles
-
-//import classNames
+﻿//import classNames
 var classNames = require('classnames')
 
 //import Loading

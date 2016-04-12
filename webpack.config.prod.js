@@ -18,14 +18,14 @@ module.exports = {
         'NODE_ENV': JSON.stringify('production')
       }
     }),
-    new webpack.ProvidePlugin({
-        $: "jquery",
-        jQuery: "jquery"
-    }),
     new webpack.optimize.UglifyJsPlugin({
       compressor: {
         warnings: false
       }
+    }),
+    new webpack.ProvidePlugin({
+        $: "jquery",
+        jQuery: "jquery"
     })
   ],
   module: {
@@ -37,7 +37,7 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                loader: "style-loader!css-loader"
+                loader: "style-loader!css-loader",
             },
             //bootstrap specific
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },

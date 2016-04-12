@@ -1,3 +1,5 @@
+require('bootstrap/dist/css/bootstrap.css');
+require("./css/app.css");
 import React from 'react';
 import { render } from 'react-dom';
 import {Router, Route, IndexRoute, browserHistory} from 'react-router'

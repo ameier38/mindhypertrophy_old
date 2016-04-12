@@ -4,14 +4,14 @@
   "description": "A blog to train your brain",
   "scripts": {
     "clean": "rimraf dist",
-    "build:webpack": "webpack --config webpack.config.prod.js",
-    "build": "npm run clean && npm run build:webpack",
+    "build:prod": "npm run clean && webpack --config webpack.config.prod.js",
+    "build:dev": "npm run clean",
     "start": "node server.js",
-    "postinstall": "npm run build",
+    "postinstall": "if-env NODE_ENV=production && npm run build:prod || npm run build:dev",
     "lint": "eslint src"
   },
   "engines": {
-      "node":"5.7.1"
+    "node": "5.7.1"
   },
   "repository": {
     "type": "git",
@@ -33,42 +33,35 @@
   "homepage": "https://mindhypertrophy.com",
   "devDependencies": {
     "babel-eslint": "^5.0.0-beta4",
-    "babel-preset-es2015": "^6.3.13",
-    "babel-preset-react": "^6.3.13",
-    "babel-preset-react-hmre": "^1.0.0",  
-    "cross-env": "^1.0.6",    
+    "babel-preset-react-hmre": "^1.0.0",
     "eslint": "^1.10.3",
     "eslint-plugin-babel": "^3.0.0",
     "eslint-plugin-react": "^3.11.3",
-    "eventsource-polyfill": "^0.9.6",  
-    "extract-text-webpack-plugin": "^1.0.1",  
-    "rimraf": "^2.4.3",    
     "webpack-dev-middleware": "^1.4.0",
     "webpack-hot-middleware": "^2.6.0"
   },
   "dependencies": {
-    "bootstrap": "^3.3.6",
-    "bootstrap-webpack": "0.0.5",
-    "react": "^0.14.3",
-    "react-dom": "^0.14.3",
-    "react-router": "^2.0.1",
-    "classnames": "^2.2.3",
-    "css-loader": "^0.23.1",
-    "exports-loader": "^0.6.3",
-    "express": "^4.13.3",
-    "file-loader": "^0.8.5",
-    "imports-loader": "^0.6.5",
     "babel-core": "^6.3.15",
     "babel-loader": "^6.2.0",
-    "less": "2.6.1",
-    "less-loader": "^2.2.2",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "bootstrap": "^3.3.6",
+    "classnames": "^2.2.3",
+    "css-loader": "^0.23.1",
+    "eventsource-polyfill": "^0.9.6",
+    "express": "^4.13.3",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
+    "if-env": "^1.0.0",
+    "node-sass": "^3.4.2",
+    "react": "^0.14.3",
     "react-bootstrap": "^0.28.3",
-    "react-loading": "0.0.9",
+    "react-dom": "^0.14.3",
+    "react-router": "^2.0.1",
     "react-spinkit": "^1.1.6",
-    "sass-loader": "3.2.0",
+    "rimraf": "^2.4.3",
     "style-loader": "^0.13.0",
     "url-loader": "^0.5.7",
-    "webpack": "^1.12.9",
-    "autoprefixer-loader": "^3.2.0"
+    "webpack": "^1.12.9"
   }
 }
