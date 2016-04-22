@@ -2,6 +2,8 @@
 
 const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
 const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
+// const cardApi = 'http://localhost:5000/api/cards'
+// const tagApi = 'http://localhost:5000/api/tags'
 
 //initialize CardStore
 let _cards = []

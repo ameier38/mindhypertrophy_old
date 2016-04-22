@@ -7,7 +7,7 @@ var Spinner = require('react-spinkit');
 
 //import componenets
 import React, { Component } from 'react';
-import {Link} from 'react-router'
+import {Link, browserHistory} from 'react-router'
 import {Grid,Row,Col,ButtonToolbar,Button,Navbar,Well,Image} from 'react-bootstrap'
 
 //import CardStore
@@ -59,9 +59,9 @@ class Card extends Component{
     render(){
         return (
             <Col xs={12} sm={6}>
-                <div className="card clickable">
+                <div className="card clickable" onClick={this.props.onClick.bind(null,`/articles/${this.props.id}`)}>
                     <div className="card-header">
-                        <h3 className="card-header-title"><Link to={`/articles/${this.props.id}`}>{this.props.title}</Link></h3>
+                        <h3 className="card-header-title">{this.props.title}</h3>
                         <span className="card-header-date">{this.props.createdDate}</span>
                     </div>
                     <div className="card-summary">
@@ -232,6 +232,8 @@ export class CardContainer extends Component{
         }
         //bind updateCards method to the CardContainer instance
         this.updateData = this.updateData.bind(this)
+        //bind handleCardClick method to the CardContainer instance
+        this.handleCardClick = this.handleCardClick.bind(this)
     }
     componentDidMount(){
         //Add change listener
@@ -249,7 +251,9 @@ export class CardContainer extends Component{
             tags: CardStore.getTags()
         })
     }
-    
+    handleCardClick(url){
+        browserHistory.push(url)
+    }
     //Invoked when a component is receiving new props. This method is not called for the initial render.
     componentWillReceiveProps(nextProps) {
         //let is scoped to the nearest enclosing block
@@ -269,10 +273,11 @@ export class CardContainer extends Component{
                     title={card.Title} 
                     summary={card.Summary} 
                     createdDate={card.CreatedDate} 
-                    tags={card.Tags} 
+                    tags={card.Tags}
+                    onClick={this.handleCardClick}
                 />
             );
-        });
+        }.bind(this));
         return(
             <div className="card-container">
                 <Jumbotron
