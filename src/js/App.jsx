@@ -28,9 +28,8 @@ class Navigation extends Component{
                     </Nav>
                     <Nav pullRight>
                         <Navbar.Brand>
-                            <Link to="/about">About</Link>                     
-                        </Navbar.Brand>
-                        <Navbar.Toggle onClick={this.props.toggleSidebar}/>
+                            <Link to="/about">About</Link>                      
+                        </Navbar.Brand>                     
                     </Nav>
                 </Navbar>
             </div> 
@@ -39,13 +38,9 @@ class Navigation extends Component{
 }
 
 class TagFilter extends Component{
-    render(){
-        //classNames adds the class when value for class key is true
-        var tagFilterClass = classNames({
-            "show-sidebar" : this.props.sidebarVisible
-        });      
+    render(){      
         return(
-            <div id="tag-filter" className={tagFilterClass}>          
+            <div id="tag-filter">          
                 <Grid>
                     <Well bsSize="small">
                         <TagContainer 
@@ -121,8 +116,9 @@ class TagContainer extends Component{
 class Tag extends Component{
     render(){
         const queryPath = { pathname: "/", query: { tagId: this.props.tagId }}
+        const style = (this.props.tagId==1) ? "primary" : "default"
         return (
-            <Button bsSize="xsmall" onClick={this.props.onClick.bind(this,queryPath)}>{this.props.tagName}</Button>
+            <Button bsSize="xsmall" bsStyle={style} onClick={this.props.onClick.bind(this,queryPath)}>{this.props.tagName}</Button>
         );
     }
 }
@@ -133,11 +129,17 @@ class Footer extends Component{
         return(
             <Grid id="footer">
                 <Row>
-                    <Col xs={4}>
+                    <Col xs={3}>
+                        <Link to="/">MindHypertrophy</Link>
+                    </Col>
+                    <Col xs={3}>
                         <Link to="/about">About</Link>
                     </Col>
-                    <Col xs={4}>
-                        <Link to="/contact">Contact</Link>
+                    <Col xs={3}>
+                        <p><a href="https://github.com/ameier38/mindhypertrophy.git">GitHub</a></p>
+                    </Col>
+                    <Col xs={3}>
+                        <p><i>Made in the U.S.A.</i></p>
                     </Col>
                 </Row>
             </Grid>
@@ -146,7 +148,6 @@ class Footer extends Component{
 }
 
 //Jumbotron
-//TODO: change to have its own state
 class Jumbotron extends Component{
     render(){
         var jumboStyle = {backgroundImage: this.props.imageUrl}
@@ -193,6 +194,9 @@ export class CardDetail extends Component{
             loading: false
         })
     }
+    handleClick(url){
+        browserHistory.push(url)
+    }
     render(){
         if (this.state.loading){
             return (
@@ -209,6 +213,9 @@ export class CardDetail extends Component{
                         title={this.state.cardDetail.Title}
                         description={this.state.cardDetail.CreatedDate}
                         imageUrl={this.state.cardDetail.ImageUrl} />
+                    <TagFilter 
+                        tags={this.state.cardDetail.Tags}
+                        onClick={this.handleClick} />
                     <Grid>
                         <Row>
                             <Col xs={12}>
@@ -239,36 +246,41 @@ export class CardContainer extends Component{
         }
         //bind updateCards method to the CardContainer instance
         this.updateData = this.updateData.bind(this)
-        //bind handleClick
-        this.handleClick = this.handleClick.bind(this)
     }
     componentDidMount(){
-        //Add change listener
-        CardStore.addChangeListener(this.updateData)
-        //fetch data
-        this.updateData()
+        //get query parameter
+        var {query} = this.props.location
+        //Add change listener, bind query so when data is updated it knows to filter
+        CardStore.addChangeListener(this.updateData.bind(null, query))
+        console.log("componentDidMount query: " + JSON.stringify(query))
+        //fetch cards
+        this.updateData(query)
     }
     componentWillUnmount(){
         //Remove change listener
         CardStore.removeChangeListener(this.updateData)
     }
     updateData(query) {
+        console.log("updateData query: " + JSON.stringify(query))
+        var cards = _.isEmpty(query) ? CardStore.getCards() : CardStore.getCardsByTagId(query.tagId)
+        var loading = _.isEmpty(cards)
         this.setState({
-            cards: _.isEmpty(query) ? CardStore.getCards() : CardStore.getCardsByTagId(query.tagId),
+            cards: cards,
             tags: CardStore.getTags(),
-            loading: false
+            loading: loading
         })
+        console.log("updateData complete")
     }
     //Invoked when a component is receiving new props. This method is not called for the initial render.
     componentWillReceiveProps(nextProps) {
-        //let is scoped to the nearest enclosing block
-        //TODO: check if location is the same
-        let {query} = nextProps.location
-        this.updateData(query)
+        console.log("component receiving new location: " + JSON.stringify(nextProps.location))
+        console.log("component old location: " + JSON.stringify(this.props.location))
+        var {query} = nextProps.location
+        var {old_query} = this.props.location
+        if (query !== old_query) {this.updateData(query)}
     }
     handleClick(url){
         browserHistory.push(url)
-        if (this.props.sidebarVisible) {this.props.toggleSidebar()}
     }
     render(){
         const cardNodes = this.state.cards.map(function(card){
@@ -300,7 +312,6 @@ export class CardContainer extends Component{
                         description="Give your brain a workout! Click an article below to learn more."
                         imageUrl="url(/images/neurons.jpg)" />
                     <TagFilter 
-                        sidebarVisible={this.props.sidebarVisible}
                         tags={this.state.tags}
                         onClick={this.handleClick} />
                     <Grid>
@@ -368,29 +379,15 @@ export class NotFound extends Component{
 export class App extends Component{
     constructor(props) {
         super(props)
-        //intialize cards as empty array
-        //TODO: add loading state prop to use later for spinning icon
-        this.state = { 
-            sidebarVisible: false
-        }
         //initialize CardStore
         CardStore.init()
-        //bind toggleSidebar to App
-        this.toggleSidebar = this.toggleSidebar.bind(this)
-    }
-    toggleSidebar(){
-        this.state.sidebarVisible ? this.setState({sidebarVisible: false}) : this.setState({sidebarVisible: true})
     }
     render(){
         return(
             <div id="page-container">
-                <Navigation 
-                    toggleSidebar={this.toggleSidebar.bind(this)} />
+                <Navigation />
                 <div id="view-container">       
-                    {this.props.children && React.cloneElement(this.props.children, {
-                        sidebarVisible: this.state.sidebarVisible,
-                        toggleSidebar: this.toggleSidebar
-                    })}
+                    {this.props.children}
                 </div>
                 <Footer />
             </div>  

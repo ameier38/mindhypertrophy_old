@@ -4,11 +4,14 @@
 }
 
 .navbar-nav>li, .navbar-nav {
-float: left !important;
+    float: left !important;
 }
 .navbar-right {
-float: right!important;
+    float: right!important;
 }
+    .navbar-right .navbar-brand {
+        font-size: 14px;
+    }
 .navbar-nav > li > a {
     margin-top: 4px;
     margin-bottom: 4px;
@@ -27,29 +30,13 @@ float: right!important;
         width: auto;
     }
 #tag-filter{
-    position: fixed;
-    top: 60px;
-    width: 250px;
-    height: 100%;
-    overflow: hidden;
-    left: -250px;
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: auto;
 }
-    #tag-filter.show-sidebar{
-        left: 0;
-        z-index: 999;
-        background-color: #999999;
-        padding-top: 15px;       
-    }
-@media (min-width: 768px){
-    #tag-filter{
-        position: static;
-        width: auto;
-        height: auto;
-        overflow: auto;
-    }
-    #tag-filter.show-sidebar{
-        background-color: none;      
-    }
+#tag-filter.show-sidebar{
+    background-color: none;      
 }
 #footer {
     color: #999999;
@@ -58,7 +45,7 @@ float: right!important;
     padding-bottom: 10px;
 }
     #footer a{
-        color: #555;
+        color: #999999;
     }
     #footer a:hover {
         color:#000;
@@ -121,14 +108,16 @@ float: right!important;
             font-size: 200%;
             color: #999999;
         }
+    .card .tag-container button:hover{
+        color: #333;
+        background-color: #fff;
+        border-color: #ccc;
+    }
 .tag-container {
     padding: 5px 10px;
 }
 .tag{
     background-color:#999999;
-}
-.tag.plain-tag{
-    background-color: #fff;
 }
 .tag-container button{
     margin: 5px;

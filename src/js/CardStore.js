@@ -70,11 +70,18 @@ const CardStore = {
     },
     
     getCardsByTagId: function (tagId) {
-        var cards = _cards.filter(function(card){
-            return card.Tags.filter(function (tag) {
-                return tag.Id == tagId
-            }).length > 0
-        })
+        var cards = []
+        //tagId = 1 is default all cards
+        if (tagId == 1){
+            cards = _cards
+        }
+        else{
+            cards = _cards.filter(function(card){
+                return card.Tags.filter(function (tag) {
+                    return tag.Id == tagId
+                }).length > 0
+            })
+        }
         return cards
     },
 
