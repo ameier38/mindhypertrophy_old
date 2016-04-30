@@ -1,9 +1,9 @@
 //https://github.com/reactjs/react-router/blob/master/examples/master-detail/ContactStore.js
 
-const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
-const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
-// const cardApi = 'http://localhost:5000/api/cards'
-// const tagApi = 'http://localhost:5000/api/tags'
+// const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
+// const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
+const cardApi = 'http://localhost:5000/api/cards'
+const tagApi = 'http://localhost:5000/api/tags'
 
 //initialize CardStore
 let _cards = []
@@ -67,6 +67,15 @@ const CardStore = {
             tags.push(_tags[id])
         }
         return tags
+    },
+    
+    getCardsByTagId: function (tagId) {
+        var cards = _cards.filter(function(card){
+            return card.Tags.filter(function (tag) {
+                return tag.Id == tagId
+            }).length > 0
+        })
+        return cards
     },
 
     getDetail: function () {

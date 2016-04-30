@@ -1,6 +1,9 @@
 ﻿//import classNames
 var classNames = require('classnames')
 
+//import lodash
+var _ = require('lodash')
+
 //import Loading
 //TODO: figure out why import does not work
 var Spinner = require('react-spinkit');
@@ -8,7 +11,7 @@ var Spinner = require('react-spinkit');
 //import componenets
 import React, { Component } from 'react';
 import {Link, browserHistory} from 'react-router'
-import {Grid,Row,Col,ButtonToolbar,Button,Navbar,Well,Image} from 'react-bootstrap'
+import {Grid,Row,Col,ButtonToolbar,Button,Navbar,Nav,NavItem,Well,Image} from 'react-bootstrap'
 
 //import CardStore
 import CardStore from './CardStore'
@@ -18,16 +21,17 @@ class Navigation extends Component{
         return(
             <div id="navigation">
                 <Navbar fixedTop inverse >
-                    <div className="navbar-header pull-left">
-                        <Link className="navbar-brand btn" to="/">MindHypertrophy</Link>
-                    </div>
-                    <div className="navbar-header pull-right">
-                        <ul className="navbar-nav pull-left list-inline">
-                            <li><Link className="navbar-brand btn" to="/about">About</Link></li>
-                            <li><Link className="navbar-brand btn" to="/contact">Contact</Link></li>
-                        </ul>
+                    <Nav pullLeft>
+                        <Navbar.Brand>
+                            <Link to="/">MindHypertrophy</Link>                      
+                        </Navbar.Brand>
+                    </Nav>
+                    <Nav pullRight>
+                        <Navbar.Brand>
+                            <Link to="/about">About</Link>                     
+                        </Navbar.Brand>
                         <Navbar.Toggle onClick={this.props.toggleSidebar}/>
-                    </div>
+                    </Nav>
                 </Navbar>
             </div> 
         );
@@ -45,7 +49,8 @@ class TagFilter extends Component{
                 <Grid>
                     <Well bsSize="small">
                         <TagContainer 
-                            tags={this.props.tags} />
+                            tags={this.props.tags}
+                            onClick={this.props.onClick} />
                     </Well>
                 </Grid>
             </div>
@@ -67,7 +72,7 @@ class Card extends Component{
                     <div className="card-summary">
                         <p>{this.props.summary}</p>
                     </div>
-                    <TagContainer tags={this.props.tags} />
+                    <TagContainer tags={this.props.tags} onClick={this.props.onClick} />
                 </div>
             </Col>
         );
@@ -99,9 +104,9 @@ class TagContainer extends Component{
     render(){
         const tagNodes = this.props.tags.map(function(tag){
             return(
-                <Tag key={tag.Id} tagName={tag.Name} />      
+                <Tag key={tag.Id} tagId={tag.Id} tagName={tag.Name} onClick={this.props.onClick} />      
             ); 
-        });
+        }.bind(this));
         return (
             <div className="tag-container">
                 <ButtonToolbar>
@@ -115,8 +120,9 @@ class TagContainer extends Component{
 //Tag
 class Tag extends Component{
     render(){
+        const queryPath = { pathname: "/", query: { tagId: this.props.tagId }}
         return (
-            <Link to={{ pathname: "/", query: { tagId: this.props.key }}} className="btn btn-xs" role="button">{this.props.tagName}</Link>
+            <Button bsSize="xsmall" onClick={this.props.onClick.bind(this,queryPath)}>{this.props.tagName}</Button>
         );
     }
 }
@@ -228,12 +234,13 @@ export class CardContainer extends Component{
         //TODO: add loading state prop to use later for spinning icon
         this.state = { 
             cards: [],
-            tags: []
+            tags: [],
+            loading: true
         }
         //bind updateCards method to the CardContainer instance
         this.updateData = this.updateData.bind(this)
-        //bind handleCardClick method to the CardContainer instance
-        this.handleCardClick = this.handleCardClick.bind(this)
+        //bind handleClick
+        this.handleClick = this.handleClick.bind(this)
     }
     componentDidMount(){
         //Add change listener
@@ -245,25 +252,24 @@ export class CardContainer extends Component{
         //Remove change listener
         CardStore.removeChangeListener(this.updateData)
     }
-    updateData() {
+    updateData(query) {
         this.setState({
-            cards: CardStore.getCards(),
-            tags: CardStore.getTags()
+            cards: _.isEmpty(query) ? CardStore.getCards() : CardStore.getCardsByTagId(query.tagId),
+            tags: CardStore.getTags(),
+            loading: false
         })
-    }
-    handleCardClick(url){
-        browserHistory.push(url)
     }
     //Invoked when a component is receiving new props. This method is not called for the initial render.
     componentWillReceiveProps(nextProps) {
         //let is scoped to the nearest enclosing block
+        //TODO: check if location is the same
         let {query} = nextProps.location
-        this.setState({
-            //if the query is defined then get cards for particular tagId, otherwise get all cards
-            cards: query ? CardStore.getCards(query.tagId) : CardStore.getCards()
-        })
+        this.updateData(query)
     }
-
+    handleClick(url){
+        browserHistory.push(url)
+        if (this.props.sidebarVisible) {this.props.toggleSidebar()}
+    }
     render(){
         const cardNodes = this.state.cards.map(function(card){
             return (
@@ -274,26 +280,38 @@ export class CardContainer extends Component{
                     summary={card.Summary} 
                     createdDate={card.CreatedDate} 
                     tags={card.Tags}
-                    onClick={this.handleCardClick}
+                    onClick={this.handleClick}
                 />
             );
         }.bind(this));
-        return(
-            <div className="card-container">
-                <Jumbotron
-                    title="Train your brain"
-                    description="Give your brain a workout! Click an article below to learn more."
-                    imageUrl="url(/images/neurons.jpg)" />
-                <TagFilter 
-                    sidebarVisible={this.props.sidebarVisible}
-                    tags={this.state.tags} />
-                <Grid>
-                    <Row>
-                        {cardNodes}
-                    </Row> 
-                </Grid>
-            </div>
-        );
+        if (this.state.loading){
+            return (
+                <div className="card-container">
+                    <Jumbotron title="Loading..." />
+                    <Spinner spinnerName='three-bounce'/>
+                </div>    
+            ) 
+        }
+        else {
+            return(
+                <div className="card-container">
+                    <Jumbotron
+                        title="Train your brain"
+                        description="Give your brain a workout! Click an article below to learn more."
+                        imageUrl="url(/images/neurons.jpg)" />
+                    <TagFilter 
+                        sidebarVisible={this.props.sidebarVisible}
+                        tags={this.state.tags}
+                        onClick={this.handleClick} />
+                    <Grid>
+                        <Row>
+                            {cardNodes}
+                        </Row> 
+                    </Grid>
+                </div>
+            )
+        }
+        
     }  
 }
 
@@ -301,20 +319,40 @@ export class CardContainer extends Component{
 export class About extends Component{
     render(){
         return(
-            <div>
-                <h1>About</h1>
-            </div>
-        )
-    }
-}
-
-//Contact
-export class Contact extends Component{
-    render(){
-        return(
-            <div>
-                <h1>Contact</h1>
-            </div>
+            <div className="card-container">
+                    <Jumbotron
+                        title="About"
+                        description="Blog built using React framework" />
+                    <Grid>
+                        <Row>
+                            <Col xs={12}>
+                                <div className="card">
+                                    <div className="card-content">
+                                        <div>
+                                            <p>
+                                                Hello! I created this blog as a way to learn about Facebook's React framework. 
+                                                I hope to continue using it to learn about new topics that spark my interest, 
+                                                and I hope teach visitors something new as well.
+                                            </p>
+                                            <p>
+                                                All the code is hosted on GitHub <a href="https://github.com/ameier38/mindhypertrophy.git">here</a>.
+                                                I welcome all comments on how I could improve the site. Currently exploring how to use redux...
+                                            </p>
+                                            <p>
+                                                I leveraged a number of open source frameworks including:
+                                            </p>
+                                            <ul>
+                                                <li><a href="https://github.com/gaearon/babel-plugin-react-transform.git">React Transform</a></li>
+                                                <li><a href="https://github.com/reactjs/react-router.git">React Router</a></li>
+                                                <li><a href="https://react-bootstrap.github.io/">React Bootstrap</a></li>
+                                            </ul>         
+                                        </div>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row> 
+                    </Grid>
+                </div>
         )
     }
 }
@@ -337,6 +375,8 @@ export class App extends Component{
         }
         //initialize CardStore
         CardStore.init()
+        //bind toggleSidebar to App
+        this.toggleSidebar = this.toggleSidebar.bind(this)
     }
     toggleSidebar(){
         this.state.sidebarVisible ? this.setState({sidebarVisible: false}) : this.setState({sidebarVisible: true})
@@ -348,7 +388,8 @@ export class App extends Component{
                     toggleSidebar={this.toggleSidebar.bind(this)} />
                 <div id="view-container">       
                     {this.props.children && React.cloneElement(this.props.children, {
-                        sidebarVisible: this.state.sidebarVisible
+                        sidebarVisible: this.state.sidebarVisible,
+                        toggleSidebar: this.toggleSidebar
                     })}
                 </div>
                 <Footer />
