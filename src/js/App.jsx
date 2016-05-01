@@ -12,6 +12,9 @@ import React, { Component } from 'react';
 import {Link, browserHistory} from 'react-router'
 import {Grid,Row,Col,ButtonToolbar,Button,Navbar,Nav,NavItem,Well,Image} from 'react-bootstrap'
 
+//import logo image
+var logoImage = require('../images/mindhypertrophy.png')
+
 //define api paths
 const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
 const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
@@ -31,7 +34,10 @@ class Navigation extends Component{
                     <Nav pullRight>
                         <Navbar.Brand>
                             <Link to="/about">About</Link>                      
-                        </Navbar.Brand>                     
+                        </Navbar.Brand>
+                        <Navbar.Brand>
+                            <Link to="/contact">Contact</Link>                      
+                        </Navbar.Brand>                    
                     </Nav>
                 </Navbar>
             </div> 
@@ -136,6 +142,7 @@ class Footer extends Component{
                     </Col>
                     <Col xs={6}>
                         <Link to="/about">About</Link>
+                        <Link to="/contact">Contact</Link>
                     </Col>
                 </Row>
             </Grid>
@@ -147,10 +154,12 @@ class Footer extends Component{
 class Jumbotron extends Component{
     render(){
         var jumboStyle = {backgroundImage: `url(${this.props.imageUrl})`}
+        var logo = this.props.includeLogo ? (<img src={logoImage} />) : null
         return(
             <div className="jumbotron" style={jumboStyle}>
                 <Grid>
                     <div>
+                        {logo}
                         <h1>{this.props.title}</h1>
                         <p>{this.props.description}</p>
                     </div>
@@ -322,7 +331,8 @@ export class CardContainer extends Component{
                     <Jumbotron
                         title="Train your brain"
                         description="Give your brain a workout! Click an article below to learn more."
-                        imageUrl="/images/neurons.jpg" />
+                        imageUrl="/images/neurons.jpg" 
+                        includeLogo={true} />
                     <TagFilter 
                         tags={this.state.tags}
                         onClick={this.handleClick} />
@@ -344,8 +354,9 @@ export class About extends Component{
         return(
             <div className="card-container">
                     <Jumbotron
-                        title="About"
-                        description="Blog built using React framework" />
+                        title="About MindHypertrophy"
+                        description="A blog built using React framework" 
+                        includeLogo={true} />
                     <Grid>
                         <Row>
                             <Col xs={12}>
@@ -368,6 +379,39 @@ export class About extends Component{
                                                 <li><a href="https://github.com/gaearon/babel-plugin-react-transform.git">React Transform</a></li>
                                                 <li><a href="https://github.com/reactjs/react-router.git">React Router</a></li>
                                                 <li><a href="https://react-bootstrap.github.io/">React Bootstrap</a></li>
+                                            </ul>         
+                                        </div>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row> 
+                    </Grid>
+                </div>
+        )
+    }
+}
+
+//Contact
+export class Contact extends Component{
+    render(){
+        return(
+            <div className="card-container">
+                    <Jumbotron
+                        title="Contact MindHypertrophy"
+                        description="Something to say?" 
+                        includeLogo={true} />
+                    <Grid>
+                        <Row>
+                            <Col xs={12}>
+                                <div className="card">
+                                    <div className="card-content">
+                                        <div>
+                                            <p>
+                                                Use below links for appropiate contact.
+                                            </p>
+                                            <ul>
+                                                <li><a href="https://github.com/ameier38/mindhypertrophy/issues">Code issues</a></li>
+                                                <li><a href="mailto:info@mindhypertrophy.com">Say hi</a></li>
                                             </ul>         
                                         </div>
                                     </div>

@@ -26,6 +26,8 @@
 }
     .jumbotron img{
         float: left;
+        padding: 5px;
+        margin-right: 5px;
         height: 100px;
         width: auto;
     }
@@ -46,10 +48,10 @@
 }
     #footer a{
         color: #999999;
+        margin-left: 10px;
     }
     #footer a:hover {
         color:#000;
-        margin-left:-2px;
         text-decoration:none;
         cursor: pointer;
     }
