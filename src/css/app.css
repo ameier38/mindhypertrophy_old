@@ -53,6 +53,9 @@
         text-decoration:none;
         cursor: pointer;
     }
+    #footer .row div[class^="col-"]:last-child{
+        text-align: right;
+    }
 .card {
   background-color: #ffffff;
   margin: 5px;

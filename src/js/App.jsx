@@ -131,17 +131,11 @@ class Footer extends Component{
         return(
             <Grid id="footer">
                 <Row>
-                    <Col xs={3}>
+                    <Col xs={6}>
                         <Link to="/">MindHypertrophy</Link>
                     </Col>
-                    <Col xs={3}>
+                    <Col xs={6}>
                         <Link to="/about">About</Link>
-                    </Col>
-                    <Col xs={3}>
-                        <p><a href="https://github.com/ameier38/mindhypertrophy.git">GitHub</a></p>
-                    </Col>
-                    <Col xs={3}>
-                        <p><i>Made in the U.S.A.</i></p>
                     </Col>
                 </Row>
             </Grid>
