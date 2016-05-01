@@ -397,8 +397,6 @@ export class NotFound extends Component{
 export class App extends Component{
     constructor(props) {
         super(props)
-        //initialize CardStore
-        CardStore.init()
     }
     render(){
         return(
