@@ -13,10 +13,10 @@ import {Link, browserHistory} from 'react-router'
 import {Grid,Row,Col,ButtonToolbar,Button,Navbar,Nav,NavItem,Well,Image} from 'react-bootstrap'
 
 //define api paths
-const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
-const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
-// const cardApi = 'http://localhost:5000/api/cards'
-// const tagApi = 'http://localhost:5000/api/tags'
+// const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
+// const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
+const cardApi = 'http://localhost:5000/api/cards'
+const tagApi = 'http://localhost:5000/api/tags'
 
 class Navigation extends Component{
     render(){
@@ -152,7 +152,7 @@ class Footer extends Component{
 //Jumbotron
 class Jumbotron extends Component{
     render(){
-        var jumboStyle = {backgroundImage: this.props.imageUrl}
+        var jumboStyle = {backgroundImage: `url(${this.props.imageUrl})`}
         return(
             <div className="jumbotron" style={jumboStyle}>
                 <Grid>
@@ -328,7 +328,7 @@ export class CardContainer extends Component{
                     <Jumbotron
                         title="Train your brain"
                         description="Give your brain a workout! Click an article below to learn more."
-                        imageUrl="url(/images/neurons.jpg)" />
+                        imageUrl="/images/neurons.jpg" />
                     <TagFilter 
                         tags={this.state.tags}
                         onClick={this.handleClick} />
