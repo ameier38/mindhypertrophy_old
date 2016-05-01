@@ -18,8 +18,6 @@ var logoImage = require('../images/mindhypertrophy.png')
 //define api paths
 const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
 const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
-// const cardApi = 'http://localhost:5000/api/cards'
-// const tagApi = 'http://localhost:5000/api/tags'
 
 class Navigation extends Component{
     render(){
@@ -28,7 +26,7 @@ class Navigation extends Component{
                 <Navbar fixedTop inverse >
                     <Nav pullLeft>
                         <Navbar.Brand>
-                            <Link to="/">MindHypertrophy</Link>                      
+                            <Link to="/">Mind Hypertrophy</Link>                      
                         </Navbar.Brand>
                     </Nav>
                     <Nav pullRight>
@@ -354,7 +352,7 @@ export class About extends Component{
         return(
             <div className="card-container">
                     <Jumbotron
-                        title="About MindHypertrophy"
+                        title="About"
                         description="A blog built using React framework" 
                         includeLogo={true} />
                     <Grid>
@@ -363,11 +361,25 @@ export class About extends Component{
                                 <div className="card">
                                     <div className="card-content">
                                         <div>
+                                            <blockquote>
+                                                <p>
+                                                    <i>Hypertrophy:</i> excessive development of an organ or part; 
+                                                    exaggerated growth or complexity
+                                                </p>
+                                                <footer>Merriam-Webster</footer>
+                                            </blockquote>
                                             <p>
-                                                Hello! I created this blog as a way to learn about Facebook's React framework. 
-                                                I hope to continue using it to learn about new topics that spark my interest, 
-                                                and I hope teach visitors something new as well.
+                                                Hello! I created this blog because I wanted a fun and interesting way to improve my writing 
+                                                and learn about new things. One of the best ways to learn, in my opinion, is to teach what 
+                                                you are trying to learn. If you can explain something simply and clearly to someone else, 
+                                                then you probably have a pretty good understanding of the subject matter. Therefore, I try
+                                                to structure each post as a mini lesson, with someone completely unfamiliar with the subject as
+                                                the audience in mind.
                                             </p>
+                                            <blockquote className="blockquote-reverse">
+                                                <p>"I couldn't do it. I couldn't reduce it to the freshman level. That means we don't really understand it."</p>
+                                                <footer>Richard Feynman, on explaining why spin one-half particles obey Fermi Dirac statistics</footer>
+                                            </blockquote>
                                             <p>
                                                 All the code is hosted on GitHub <a href="https://github.com/ameier38/mindhypertrophy.git">here</a>.
                                                 I welcome all comments on how I could improve the site. Currently exploring how to use redux...
@@ -379,6 +391,7 @@ export class About extends Component{
                                                 <li><a href="https://github.com/gaearon/babel-plugin-react-transform.git">React Transform</a></li>
                                                 <li><a href="https://github.com/reactjs/react-router.git">React Router</a></li>
                                                 <li><a href="https://react-bootstrap.github.io/">React Bootstrap</a></li>
+                                                <li><a href="http://getbootstrap.com/">Twitter Bootstrap</a></li>
                                             </ul>         
                                         </div>
                                     </div>
@@ -397,7 +410,7 @@ export class Contact extends Component{
         return(
             <div className="card-container">
                     <Jumbotron
-                        title="Contact MindHypertrophy"
+                        title="Contact"
                         description="Something to say?" 
                         includeLogo={true} />
                     <Grid>
