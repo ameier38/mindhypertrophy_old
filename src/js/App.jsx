@@ -5,7 +5,6 @@ var classNames = require('classnames')
 var _ = require('lodash')
 
 //import Loading
-//TODO: figure out why import does not work
 var Spinner = require('react-spinkit');
 
 //import componenets
@@ -13,8 +12,11 @@ import React, { Component } from 'react';
 import {Link, browserHistory} from 'react-router'
 import {Grid,Row,Col,ButtonToolbar,Button,Navbar,Nav,NavItem,Well,Image} from 'react-bootstrap'
 
-//import CardStore
-import CardStore from './CardStore'
+//define api paths
+const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
+const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
+// const cardApi = 'http://localhost:5000/api/cards'
+// const tagApi = 'http://localhost:5000/api/tags'
 
 class Navigation extends Component{
     render(){
@@ -168,31 +170,30 @@ class Jumbotron extends Component{
 export class CardDetail extends Component{
     constructor(props) {
         super(props)
-        //intialize cards as empty array
         this.state = { 
             cardDetail: null,
             loading: true
         }
-        //bind updateDetail method to the CardDetail instance
-        this.updateDetail = this.updateDetail.bind(this)
-        //initialize CardStore detail
-        CardStore.initDetail(this.props.params.id)
+        this.loadFromServer = this.loadFromServer.bind(this)
     }
     componentDidMount(){
-        //Add change listener
-        CardStore.addChangeListener(this.updateDetail)
         //fetch data
-        this.updateDetail()
+        var apiUrl = cardApi + '/' + this.props.params.id
+        console.log("componentDidMount apiUrl: " + apiUrl)
+        this.loadFromServer(apiUrl)
     }
-    componentWillUnmount(){
-        //Remove change listener
-        CardStore.removeChangeListener(this.updateDetail)
-    }
-    updateDetail() {           
-        this.setState({
-            cardDetail: CardStore.getDetail(),
-            loading: false
-        })
+    loadFromServer(apiUrl){
+        var xhr = new XMLHttpRequest()
+        xhr.open("get", apiUrl, true)
+        xhr.onload = () => {
+            var data = JSON.parse(xhr.responseText)
+            console.log('loadFromServer cardDetail')
+            this.setState({
+                cardDetail: data,
+                loading: false 
+            })
+        }
+        xhr.send()
     }
     handleClick(url){
         browserHistory.push(url)
@@ -201,7 +202,14 @@ export class CardDetail extends Component{
         if (this.state.loading){
             return (
                 <div className="card-container">
-                    <Spinner spinnerName='three-bounce'/>
+                    <Jumbotron title="Loading..." />
+                    <Grid>
+                        <Row>
+                            <Col xs={12}>
+                                <Spinner spinnerName='three-bounce'/>
+                            </Col>
+                        </Row> 
+                    </Grid>
                 </div>    
             ) 
         }
@@ -237,47 +245,51 @@ export class CardDetail extends Component{
 export class CardContainer extends Component{
     constructor(props) {
         super(props)
-        //intialize cards as empty array
-        //TODO: add loading state prop to use later for spinning icon
         this.state = { 
             cards: [],
             tags: [],
             loading: true
         }
-        //bind updateCards method to the CardContainer instance
         this.updateData = this.updateData.bind(this)
+        this.loadFromServer = this.loadFromServer.bind(this)
     }
     componentDidMount(){
-        //get query parameter
-        var {query} = this.props.location
-        //Add change listener, bind query so when data is updated it knows to filter
-        CardStore.addChangeListener(this.updateData.bind(null, query))
-        console.log("componentDidMount query: " + JSON.stringify(query))
-        //fetch cards
+        var query = this.props.location.search
+        console.log("componentDidMount query: " + query)
         this.updateData(query)
     }
-    componentWillUnmount(){
-        //Remove change listener
-        CardStore.removeChangeListener(this.updateData)
-    }
-    updateData(query) {
-        console.log("updateData query: " + JSON.stringify(query))
-        var cards = _.isEmpty(query) ? CardStore.getCards() : CardStore.getCardsByTagId(query.tagId)
-        var loading = _.isEmpty(cards)
-        this.setState({
-            cards: cards,
-            tags: CardStore.getTags(),
-            loading: loading
-        })
-        console.log("updateData complete")
-    }
-    //Invoked when a component is receiving new props. This method is not called for the initial render.
     componentWillReceiveProps(nextProps) {
-        console.log("component receiving new location: " + JSON.stringify(nextProps.location))
-        console.log("component old location: " + JSON.stringify(this.props.location))
-        var {query} = nextProps.location
-        var {old_query} = this.props.location
+        var query = nextProps.location.search
+        console.log("componentWillReceiveProps new query: " + query)
+        var old_query = this.props.location.search
+        console.log("componentWillReceiveProps old query: " + old_query)
         if (query !== old_query) {this.updateData(query)}
+    }
+    updateData(query){
+        //load the cards
+        var all_query = '?tagId=1'
+        console.log("updateData query: " + query)
+        if (_.isEmpty(query) || query == all_query) {
+            this.loadFromServer(cardApi, 'cards')
+        }
+        else {
+            this.loadFromServer(cardApi + query, 'cards')
+        }
+        //load the tags
+        this.loadFromServer(tagApi, 'tags')  
+    }
+    loadFromServer(apiUrl, stateProp){
+        var xhr = new XMLHttpRequest()
+        xhr.open("get", apiUrl, true)
+        xhr.onload = () => {
+            var data = JSON.parse(xhr.responseText)
+            console.log('loadFromServer stateProp: ' + stateProp)
+            this.setState({
+                [stateProp]: data,
+                loading: false 
+            })
+        }
+        xhr.send()
     }
     handleClick(url){
         browserHistory.push(url)
@@ -300,7 +312,13 @@ export class CardContainer extends Component{
             return (
                 <div className="card-container">
                     <Jumbotron title="Loading..." />
-                    <Spinner spinnerName='three-bounce'/>
+                    <Grid>
+                        <Row>
+                            <Col xs={12}>
+                                <Spinner spinnerName='three-bounce'/>
+                            </Col>
+                        </Row> 
+                    </Grid>
                 </div>    
             ) 
         }
