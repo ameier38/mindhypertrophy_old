@@ -7,6 +7,9 @@ var _ = require('lodash')
 //import Loading
 var Spinner = require('react-spinkit');
 
+//import Markdown
+var Markdown = require('react-remarkable');
+
 //import componenets
 import React, { Component } from 'react';
 import {Link, browserHistory} from 'react-router'
@@ -215,7 +218,6 @@ export class CardDetail extends Component{
             ) 
         }
         else {
-            const content = { __html: this.state.cardDetail.Content }
             return (
                 <div className="card-container">
                     <Jumbotron
@@ -230,7 +232,7 @@ export class CardDetail extends Component{
                             <Col xs={12}>
                                 <div className="card">
                                     <div className="card-content">
-                                        <div dangerouslySetInnerHTML={content} />
+                                        <Markdown source={this.state.cardDetail.Content} />
                                     </div>
                                 </div>
                             </Col>
