@@ -103,14 +103,9 @@
     .card .card-content {
         padding: 20px 20px;
         font-size: 16px;
-        line-height: 24px;           
+        line-height: 24px;
     }
-        .card .card-content h2{
-            font-size: 18px;
-            color: #999999;
-        }
-        .card .card-content p.intro::first-letter {
-            font-size: 200%;
+        .card .card-content h1, h2, h3, h4, h5, h6{
             color: #999999;
         }
     .card .tag-container button:hover{

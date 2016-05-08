@@ -8,19 +8,23 @@ var _ = require('lodash')
 var Spinner = require('react-spinkit');
 
 //import Markdown
-var Markdown = require('react-remarkable');
+
 
 //import componenets
 import React, { Component } from 'react';
 import {Link, browserHistory} from 'react-router'
 import {Grid,Row,Col,ButtonToolbar,Button,Navbar,Nav,NavItem,Well,Image} from 'react-bootstrap'
+import Markdown from 'react-remarkable'
+import Latex from 'react-latex'
 
 //import logo image
 var logoImage = require('../images/mindhypertrophy.png')
 
 //define api paths
-const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
-const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
+// const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
+// const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
+const cardApi = 'http://localhost:5000/api/cards'
+const tagApi = 'http://localhost:5000/api/tags'
 
 class Navigation extends Component{
     render(){
@@ -202,6 +206,21 @@ export class CardDetail extends Component{
     handleClick(url){
         browserHistory.push(url)
     }
+    parseLatex(content){
+        // define regex to match tex tag
+        var reTexTag = /(<tex>.*?<\/tex>)/g
+        // define regex to get tex tag content
+        var reTexContent = /(<([^>]+)>)/ig
+        // split content by each <tex> tag
+        var elements = content.split(reTexTag)
+        // loop through elements and replace <tex> tags with Latex components
+        for (let i=0; i<elements.length; i++) {
+            if (elements[i].match(reTexTag)){
+                elements[i] = <Latex>{elements[i].replace(reTexContent,"")}</Latex>
+            }
+        }
+        return elements
+    }
     render(){
         if (this.state.loading){
             return (
@@ -232,7 +251,9 @@ export class CardDetail extends Component{
                             <Col xs={12}>
                                 <div className="card">
                                     <div className="card-content">
-                                        <Markdown source={this.state.cardDetail.Content} />
+                                        <Markdown>
+                                            {this.parseLatex(this.state.cardDetail.Content)}
+                                        </Markdown>
                                     </div>
                                 </div>
                             </Col>
