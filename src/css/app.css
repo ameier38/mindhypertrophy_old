@@ -108,6 +108,8 @@
         .card .card-content h1, h2, h3, h4, h5, h6{
             color: #999999;
         }
+        .card .card-content span.first-inline p:first-child { display: inline }
+        .card .card-content span.last-inline p:last-child { display: inline }
     .card .tag-container button:hover{
         color: #333;
         background-color: #fff;

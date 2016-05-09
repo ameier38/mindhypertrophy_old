@@ -1,4 +1,7 @@
-﻿//import classNames
+﻿// import path
+var path = require('path')
+
+//import classNames
 var classNames = require('classnames')
 
 //import lodash
@@ -7,15 +10,12 @@ var _ = require('lodash')
 //import Loading
 var Spinner = require('react-spinkit');
 
-//import Markdown
-
-
-//import componenets
+//import components
 import React, { Component } from 'react';
 import {Link, browserHistory} from 'react-router'
 import {Grid,Row,Col,ButtonToolbar,Button,Navbar,Nav,NavItem,Well,Image} from 'react-bootstrap'
-import Markdown from 'react-remarkable'
-import Latex from 'react-latex'
+
+var Markdown = require('./remarkable')
 
 //import logo image
 var logoImage = require('../images/mindhypertrophy.png')
@@ -206,21 +206,6 @@ export class CardDetail extends Component{
     handleClick(url){
         browserHistory.push(url)
     }
-    parseLatex(content){
-        // define regex to match tex tag
-        var reTexTag = /(<tex>.*?<\/tex>)/g
-        // define regex to get tex tag content
-        var reTexContent = /(<([^>]+)>)/ig
-        // split content by each <tex> tag
-        var elements = content.split(reTexTag)
-        // loop through elements and replace <tex> tags with Latex components
-        for (let i=0; i<elements.length; i++) {
-            if (elements[i].match(reTexTag)){
-                elements[i] = <Latex>{elements[i].replace(reTexContent,"")}</Latex>
-            }
-        }
-        return elements
-    }
     render(){
         if (this.state.loading){
             return (
@@ -252,7 +237,7 @@ export class CardDetail extends Component{
                                 <div className="card">
                                     <div className="card-content">
                                         <Markdown>
-                                            {this.parseLatex(this.state.cardDetail.Content)}
+                                            {this.state.cardDetail.Content}
                                         </Markdown>
                                     </div>
                                 </div>

@@ -43,6 +43,10 @@ module.exports = {
                 test: /\.(png|jpg|)$/,
                 loader: 'url-loader?limit=200000'
             },
+            {
+                test: /\.json$/,
+                loader: 'json'
+            },
             //bootstrap specific
             { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
             { test: /\.(woff|woff2)$/, loader:"url?prefix=font/&limit=5000" },
@@ -51,6 +55,6 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['','.js','.jsx'] 
+        extensions: ['','.js','.jsx']
     }
 };
