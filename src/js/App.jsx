@@ -20,10 +20,10 @@ import {Markdown} from './Markdown.jsx'
 var logoImage = require('../images/mindhypertrophy.png')
 
 //define api paths
-// const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
-// const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
-const cardApi = 'http://localhost:5000/api/cards'
-const tagApi = 'http://localhost:5000/api/tags'
+const cardApi = 'https://mindhypertrophy.azurewebsites.net/api/cards'
+const tagApi = 'https://mindhypertrophy.azurewebsites.net/api/tags'
+// const cardApi = 'http://localhost:5000/api/cards'
+// const tagApi = 'http://localhost:5000/api/tags'
 
 class Navigation extends Component{
     render(){
