@@ -15,7 +15,7 @@ import React, { Component } from 'react';
 import {Link, browserHistory} from 'react-router'
 import {Grid,Row,Col,ButtonToolbar,Button,Navbar,Nav,NavItem,Well,Image} from 'react-bootstrap'
 
-var Markdown = require('./remarkable')
+import {Markdown} from './Markdown.jsx'
 
 //import logo image
 var logoImage = require('../images/mindhypertrophy.png')
