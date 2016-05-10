@@ -14,7 +14,6 @@ var Spinner = require('react-spinkit');
 import React, { Component } from 'react';
 import {Link, browserHistory} from 'react-router'
 import {Grid,Row,Col,ButtonToolbar,Button,Navbar,Nav,NavItem,Well,Image} from 'react-bootstrap'
-
 import {Markdown} from './Markdown.jsx'
 
 //import logo image
